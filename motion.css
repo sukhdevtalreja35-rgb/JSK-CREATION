@@ -1,0 +1,64 @@
+/* ============================================================
+   JSK Creation — motion layer
+   Scroll reveals, hero text entrance, hover/press feedback,
+   cart-count pop and a gentle WhatsApp pulse. Loaded after the
+   page's own styles. Everything is switched off for visitors who
+   ask their device for reduced motion.
+   ============================================================ */
+
+@keyframes moUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes moFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes moPop {
+  0%   { transform: scale(0.6); }
+  60%  { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+@keyframes moRing {
+  0%   { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.45); }
+  70%  { box-shadow: 0 0 0 14px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+/* whole page softly fades in on load (opacity only, so fixed header still works) */
+body { animation: moFade 0.6s ease backwards; }
+
+/* scroll reveal: JS marks an element pending (hidden), then plays the rise once it is on screen */
+.mo-pending { opacity: 0; }
+.mo-play {
+  animation: moUp 0.75s var(--ease-out, cubic-bezier(.16,1,.3,1)) backwards;
+  animation-delay: var(--mo-d, 0ms);
+}
+
+/* hero: the headline rises each time its slide becomes active */
+.hero-slide.active .slide-title {
+  animation: moUp 0.9s var(--ease-out, cubic-bezier(.16,1,.3,1)) 0.15s backwards;
+}
+
+/* press feedback on every button */
+.btn:active { transform: scale(0.97); }
+
+/* product photo gently zooms on hover */
+.card .card-media img { transition: transform 0.6s var(--ease-out, cubic-bezier(.16,1,.3,1)); }
+.card:hover .card-media img { transform: scale(1.05); }
+
+/* cart count bounces whenever the number changes (JS re-adds .mo-pop) */
+.cart-count.mo-pop { animation: moPop 0.45s var(--ease-out, cubic-bezier(.16,1,.3,1)); }
+
+/* WhatsApp button: soft ring pulse to draw the eye */
+.wa-float { animation: moRing 2.4s ease-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .mo-pending { opacity: 1; }
+}
